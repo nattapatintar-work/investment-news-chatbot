@@ -4,6 +4,7 @@ import requests
 from anthropic import Anthropic
 from dotenv import load_dotenv
 from newspaper import Article
+from monitor import log_request, log_error
 
 load_dotenv()
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
@@ -143,32 +144,40 @@ def run_pipeline(ticker: str, num_articles: int = 3) -> list:
     Returns:
         list of summaries
     """
-    print(f"Fetching {num_articles} articles for {ticker}...")
-    articles = fetch_news(ticker, num_articles)
+    total_tokens = 0
+    try:
+        print(f"Fetching {num_articles} articles for {ticker}...")
+        articles = fetch_news(ticker, num_articles)
 
-    results = []
-    for i, article in enumerate(articles):
-        print(f"Processing article {i+1} of {num_articles}...")
+        results = []
+        for i, article in enumerate(articles):
+            print(f"Processing article {i+1} of {num_articles}...")
 
-        # Step 1 — scrape full text from URL
-        full_text = scrape_article(article["url"])
+            # Step 1 — scrape full text from URL
+            full_text = scrape_article(article["url"])
 
-        # Step 2 — send to Claude for summary
-        summary = summarize_article(full_text, ticker)
+            # Step 2 — send to Claude for summary
+            summary = summarize_article(full_text, ticker)
 
-        # Step 3 — collect results
-        results.append({
-            "title"      : article["title"],
-            "url"        : article["url"],
-            "summary"    : summary["english_summary"],
-            "thai"       : summary["thai_summary"],
-            "impact"     : summary["impact"],
-            "sentiment"  : summary["sentiment"],
-            "confidence" : summary["confidence"],
-            "token_used" : summary["token_used"]
-        })
+            total_tokens += summary["token_used"]
 
-    return results
+            # Step 3 — collect results
+            results.append({
+                "title"      : article["title"],
+                "url"        : article["url"],
+                "summary"    : summary["english_summary"],
+                "thai"       : summary["thai_summary"],
+                "impact"     : summary["impact"],
+                "sentiment"  : summary["sentiment"],
+                "confidence" : summary["confidence"],
+                "token_used" : summary["token_used"]
+            })
+        log_request(ticker, num_articles, total_tokens, success=True)
+        return results
+    except Exception as e :
+        log_error(ticker , e)
+        log_request(ticker , num_articles ,total_tokens ,success=False)
+        raise
 
 if __name__ == '__main__':
     print("pipeline.py is running...")  

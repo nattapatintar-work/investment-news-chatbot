@@ -1,23 +1,12 @@
-# Python-generated files
 __pycache__/
 *.py[oc]
 build/
 dist/
 wheels/
 *.egg-info
-
-# Virtual environments
 .venv
-
-# Secret keys — never upload these
 .env
-
-# Python cache
 __pycache__/
 *.pyc
-
-# VS Code
 .vscode/
-
-# Jupyter checkpoints
 .ipynb_checkpoints/

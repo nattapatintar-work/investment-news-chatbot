@@ -1,0 +1,5 @@
+2026-06-26 10:47:49,247 — INFO — {"timestamp": "2026-06-26 10:47:49", "ticker": "NVDA", "num_articles": 3, "total_tokens": 893, "cost_usd": 0.00186, "success": true}
+2026-06-26 21:27:52,739 — INFO — HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-26 21:27:57,015 — INFO — HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-26 21:28:01,893 — INFO — HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-06-26 21:28:01,894 — INFO — {"timestamp": "2026-06-26 21:28:01", "ticker": "NVDA", "num_articles": 3, "total_tokens": 6626, "cost_usd": 0.01378, "success": true}
